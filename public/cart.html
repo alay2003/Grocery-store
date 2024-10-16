@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart - Grocery Store</title>
+    <link rel="stylesheet" href="cart.css">
+</head>
+<body>
+    <header>
+        <h1>Your Cart</h1>
+    </header>
+
+    <section id="cart">
+        <h2>Cart Items</h2>
+        <ul id="cart-items"></ul>
+        <p id="total-price">Total: $0</p>
+        <button id="checkout-btn" onclick="checkout()">Buy Now</button>
+        <a href="index.html">Continue Shopping</a>
+    </section>
+
+    <div id="payment" style="display:none;">
+        <h2>Payment Process</h2>
+        <p>Payment completed successfully!</p>
+    </div>
+
+    <script src="cart.js"></script>
+</body>
+</html>

@@ -3,7 +3,8 @@ pipeline {
 
     environment {
         DOCKER_HUB_CREDENTIALS = 'alaypatel' // Replace with your Jenkins credential ID
-        DOCKER_IMAGE_NAME = 'alay2003/grocery-store' // Full repository name on Docker Hub
+        DOCKER_IMAGE_NAME = 'grocery_store_image' // Updated Docker image name
+        DOCKER_CONTAINER_NAME = 'alay2003/grocerystore' // Updated Docker container name
         IMAGE_TAG = 'new' // Specify the tag for the image
     }
 

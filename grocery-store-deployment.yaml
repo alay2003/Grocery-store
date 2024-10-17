@@ -14,6 +14,6 @@ spec:
     spec:
       containers:
         - name: grocery-store
-          image: alay2003/grocery-store:new  # Use the correct image tag here
+          image: alay2003/grocery-store:alay  # Use the correct image tag here
           ports:
             - containerPort: 3000

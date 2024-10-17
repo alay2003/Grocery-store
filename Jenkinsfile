@@ -15,15 +15,6 @@ pipeline {
             }
         }
 
-        stage('Start Minikube') {
-            steps {
-                script {
-                    // Start Minikube
-                    bat 'minikube start'
-                }
-            }
-        }
-
         stage('Build') {
             steps {
                 script {
@@ -76,6 +67,15 @@ pipeline {
                 script {
                     // Push the Docker image to Docker Hub
                     bat "docker push ${DOCKER_IMAGE_NAME}:${IMAGE_TAG}"
+                }
+            }
+        }
+
+        stage('Start Minikube') {
+            steps {
+                script {
+                    // Start Minikube
+                    bat 'minikube start'
                 }
             }
         }

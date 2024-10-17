@@ -1,35 +1,49 @@
 pipeline {
-    agent any 
+    agent any
 
     stages {
-        stage('Clone Repo') {
+        stage('Checkout') {
             steps {
-                // Clone the repository from the main branch
-                git branch: 'main', url: 'https://github.com/alay2003/Grocery-store.git'
+                checkout scm
             }
         }
 
         stage('Build') {
             steps {
-                // Install project dependencies
-                bat 'npm install' // Use 'bat' for Windows to execute commands
+                script {
+                    // Install dependencies
+                    bat 'npm install'
+                }
+            }
+        }
+
+        stage('Start Server') {
+            steps {
+                script {
+                    // Start the server in the background
+                    bat 'start cmd /c node server.js'
+                    sleep 10 // wait for the server to start
+                }
             }
         }
 
         stage('Test') {
             steps {
-                // Run tests
-                bat 'node cart_test.js' // Use 'bat' for Windows
+                script {
+                    // Run the tests
+                    bat 'node cart_test.js'
+                }
             }
         }
     }
 
     post {
-        success {
-            echo 'Build and tests completed successfully!'
-        }
-        failure {
-            echo 'Build or tests failed.'
+        always {
+            script {
+                // Clean up actions, if needed
+                echo 'Cleaning up...'
+                // You could stop the server or perform other cleanup actions here
+            }
         }
     }
 }

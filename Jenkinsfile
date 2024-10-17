@@ -42,16 +42,17 @@ pipeline {
             }
         }
 
-        stage('Login to Docker') {
-            steps {
-                script {
-                    withCredentials([usernamePassword(credentialsId: DOCKER_HUB_CREDENTIALS, passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
-                        // Login to Docker using credentials
-                        bat "echo ${DOCKER_PASSWORD} | docker login -u ${DOCKER_USERNAME} --password-stdin"
-                    }
-                }
+       stage('Login to Docker') {
+    steps {
+        script {
+            withCredentials([usernamePassword(credentialsId: DOCKER_HUB_CREDENTIALS, passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
+                // Securely login to Docker using the credentials
+                bat "cmd /c echo ${DOCKER_PASSWORD} | docker login -u ${DOCKER_USERNAME} --password-stdin"
             }
         }
+    }
+}
+
 
         stage('Build Docker Image') {
             steps {

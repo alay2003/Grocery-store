@@ -41,21 +41,23 @@ pipeline {
             }
         }
 
-      stage('Build Docker Image') {
-    steps {
-        script {
-            // Build the Docker image
-            bat "docker build -t ${DOCKER_IMAGE_NAME}:${env.BUILD_ID} ."
+     pipeline {
+    agent any
+    stages {
+        stage('Login to Docker') {
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: 'alaypatel', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
+                        bat "docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD} --password-stdin"
+                    }
+                }
+            }
         }
-    }
-}
-
-stage('Push Docker Image') {
-    steps {
-        script {
-            withCredentials([usernamePassword(credentialsId: 'alaypatel', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-                bat "docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}"
-                bat "docker push ${DOCKER_IMAGE_NAME}:${env.BUILD_ID}"
+        stage('Build and Push Docker Image') {
+            steps {
+                script {
+                    bat "docker push alay2003:40"
+                }
             }
         }
     }

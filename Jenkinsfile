@@ -75,9 +75,9 @@ pipeline {
             steps {
                 script {
                     // Apply the ELK ConfigMap and other resources
-                    bat "kubectl apply -f path/to/your/logstash-config.yaml -n ${K8S_NAMESPACE}"
-                    bat "kubectl apply -f path/to/your/elasticsearch-deployment.yaml -n ${K8S_NAMESPACE}"
-                    bat "kubectl apply -f path/to/your/kibana-deployment.yaml -n ${K8S_NAMESPACE}"
+                    bat "kubectl apply -f logstash-config.yaml -n ${K8S_NAMESPACE}"
+                    bat "kubectl apply -f elasticsearch-deployment.yaml -n ${K8S_NAMESPACE}"
+                    bat "kubectl apply -f kibana-deployment.yaml -n ${K8S_NAMESPACE}"
                 }
             }
         }

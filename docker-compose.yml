@@ -1,9 +1,0 @@
-version: '3.8'
-
-services:
-  grocery-store:
-    image: ${DOCKER_IMAGE_NAME}:${IMAGE_TAG}
-    ports:
-      - "3000:3000"  # Change this port if needed
-    environment:
-      NODE_ENV: production

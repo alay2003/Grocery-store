@@ -51,17 +51,16 @@ pipeline {
         }
 
         stage('Push Docker Image') {
-            steps {
-                script {
-                    // Log in to Docker Hub
-                    withCredentials([usernamePassword(credentialsId: DOCKER_HUB_CREDENTIALS, passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
-                        bat "echo ${DOCKER_PASSWORD} | docker login -u ${DOCKER_USERNAME} --password-stdin"
-                    }
-                    // Push the Docker image
-                    bat "docker push ${DOCKER_IMAGE_NAME}:${env.BUILD_ID}"
-                }
+    steps {
+        script {
+            withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials-id', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                bat "docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}"
+                bat "docker push alay2003:37"
             }
         }
+    }
+}
+
     }
 
     post {

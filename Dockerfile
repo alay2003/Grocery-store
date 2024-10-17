@@ -13,8 +13,6 @@ RUN npm install
 # Copy the rest of the application code
 COPY . .
 
-# Build the application (if applicable)
-RUN npm run build
 
 # Use a lighter image for the production build
 FROM node:14-alpine

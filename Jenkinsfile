@@ -46,8 +46,8 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    // Build the Docker image
-                    bat "docker build -t ${DOCKER_IMAGE_NAME}:${IMAGE_TAG} ."
+                    // Build the Docker image using Docker Pipeline Plugin
+                    docker.build("${DOCKER_IMAGE_NAME}:${IMAGE_TAG}")
                 }
             }
         }
@@ -66,7 +66,7 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 script {
-                    // Push the Docker image to Docker Hub
+                    // Push the Docker image to Docker Hub using Docker Compose
                     bat "docker push ${DOCKER_IMAGE_NAME}:${IMAGE_TAG}"
                 }
             }

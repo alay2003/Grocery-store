@@ -15,6 +15,15 @@ pipeline {
             }
         }
 
+        stage('Start Minikube') {
+            steps {
+                script {
+                    // Start Minikube
+                    bat 'minikube start'
+                }
+            }
+        }
+
         stage('Build') {
             steps {
                 script {

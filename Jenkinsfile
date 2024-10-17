@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_HUB_CREDENTIALS = 'alaypatel' // Replace with your Jenkins credential ID
+        DOCKER_HUB_CREDENTIALS = '01ca386a-8bce-456d-96e8-88b92ddafcc6' // Replace with your Jenkins credential ID
         DOCKER_IMAGE_NAME = 'alay2003' // Replace with your Docker Hub username
         IMAGE_TAG = '40' // Specify the tag for the image
     }
@@ -42,6 +42,15 @@ pipeline {
             }
         }
 
+          stage('Build Docker Image') {
+            steps {
+                script {
+                    // Build the Docker image
+                    bat "docker build -t ${DOCKER_IMAGE_NAME}:${IMAGE_TAG} ."
+                }
+            }
+        }
+
        stage('Login to Docker') {
     steps {
         script {
@@ -52,16 +61,6 @@ pipeline {
         }
     }
 }
-
-
-        stage('Build Docker Image') {
-            steps {
-                script {
-                    // Build the Docker image
-                    bat "docker build -t ${DOCKER_IMAGE_NAME}:${IMAGE_TAG} ."
-                }
-            }
-        }
 
         stage('Push Docker Image') {
             steps {

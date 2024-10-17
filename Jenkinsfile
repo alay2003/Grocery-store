@@ -42,6 +42,18 @@ pipeline {
             }
         }
 
+       
+       stage('Build Docker Image') {
+            steps {
+                script {
+                    // Build the Docker image
+                    bat "docker build -t ${DOCKER_IMAGE_NAME}:${IMAGE_TAG} ."
+                }
+            }
+        }
+       
+
+       
        stage('Login to Docker') {
     steps {
         script {
@@ -54,14 +66,7 @@ pipeline {
 }
 
 
-        stage('Build Docker Image') {
-            steps {
-                script {
-                    // Build the Docker image
-                    bat "docker build -t ${DOCKER_IMAGE_NAME}:${IMAGE_TAG} ."
-                }
-            }
-        }
+        
 
         stage('Push Docker Image') {
             steps {

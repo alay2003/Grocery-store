@@ -2,9 +2,9 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_HUB_CREDENTIALS = '01ca386a-8bce-456d-96e8-88b92ddafcc6' // Replace with your Jenkins credential ID
-        DOCKER_IMAGE_NAME = 'alay2003' // Replace with your Docker Hub username
-        IMAGE_TAG = '40' // Specify the tag for the image
+        DOCKER_HUB_CREDENTIALS = 'alaypatel' // Replace with your Jenkins credential ID
+        DOCKER_IMAGE_NAME = 'alay2003/grocery-store' // Full repository name on Docker Hub
+        IMAGE_TAG = 'new' // Specify the tag for the image
     }
 
     stages {
@@ -42,7 +42,7 @@ pipeline {
             }
         }
 
-          stage('Build Docker Image') {
+        stage('Build Docker Image') {
             steps {
                 script {
                     // Build the Docker image
@@ -51,16 +51,16 @@ pipeline {
             }
         }
 
-       stage('Login to Docker') {
-    steps {
-        script {
-            withCredentials([usernamePassword(credentialsId: DOCKER_HUB_CREDENTIALS, passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
-                // Securely login to Docker using the credentials
-                bat "cmd /c echo ${DOCKER_PASSWORD} | docker login -u ${DOCKER_USERNAME} --password-stdin"
+        stage('Login to Docker') {
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: DOCKER_HUB_CREDENTIALS, passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
+                        // Securely login to Docker using the credentials
+                        bat "cmd /c echo ${DOCKER_PASSWORD} | docker login -u ${DOCKER_USERNAME} --password-stdin"
+                    }
+                }
             }
         }
-    }
-}
 
         stage('Push Docker Image') {
             steps {

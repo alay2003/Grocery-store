@@ -1,6 +1,11 @@
 pipeline {
     agent any
 
+    environment {
+        DOCKER_HUB_CREDENTIALS = 'alaypatel' // Replace with your Jenkins credential ID
+        DOCKER_IMAGE_NAME = 'alay2003' // Replace with your Docker Hub username
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -32,6 +37,28 @@ pipeline {
                 script {
                     // Run the tests
                     bat 'node cart_test.js'
+                }
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    // Build the Docker image
+                    bat "docker build -t ${DOCKER_IMAGE_NAME}:${env.BUILD_ID} ."
+                }
+            }
+        }
+
+        stage('Push Docker Image') {
+            steps {
+                script {
+                    // Log in to Docker Hub
+                    withCredentials([usernamePassword(credentialsId: DOCKER_HUB_CREDENTIALS, passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
+                        bat "echo ${DOCKER_PASSWORD} | docker login -u ${DOCKER_USERNAME} --password-stdin"
+                    }
+                    // Push the Docker image
+                    bat "docker push ${DOCKER_IMAGE_NAME}:${env.BUILD_ID}"
                 }
             }
         }

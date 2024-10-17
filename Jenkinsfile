@@ -5,8 +5,6 @@ pipeline {
         DOCKER_HUB_CREDENTIALS = 'alaypatel' // Replace with your Jenkins credential ID
         DOCKER_IMAGE_NAME = 'alay2003/grocery_store_image' // Updated Docker image name
         IMAGE_TAG = 'new' // Specify the tag for the image
-        DOCKER_USERNAME = 'alay2003'
-        DOCKER_PASSWORD = 'alay@2003'
     }
 
     stages {
@@ -56,7 +54,7 @@ pipeline {
         stage('Login to Docker') {
             steps {
                 script {
-                    // Securely login to Docker using the credentials
+                    // Securely login to Docker using Jenkins credentials
                     withCredentials([usernamePassword(credentialsId: DOCKER_HUB_CREDENTIALS, passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
                         bat "cmd /c echo ${DOCKER_PASSWORD} | docker login -u ${DOCKER_USERNAME} --password-stdin"
                     }

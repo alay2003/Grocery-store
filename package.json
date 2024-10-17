@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "update-chromedriver": "webdriver-manager update",
-    "start": "node server.js", 
+    "start": "node server.js",
     "test": "node cart_test.js"
   },
   "keywords": [],
@@ -13,6 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.20.3",
+    "cors": "^2.8.5",
     "express": "^4.21.1"
   },
   "devDependencies": {

@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "update-chromedriver": "webdriver-manager update",
-    "start": "node yourApp.js", 
+    "start": "node server.js", 
     "test": "node cart_test.js"
   },
   "keywords": [],

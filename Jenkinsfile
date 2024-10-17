@@ -3,9 +3,10 @@ pipeline {
 
     environment {
         DOCKER_HUB_CREDENTIALS = 'alaypatel' // Replace with your Jenkins credential ID
-        DOCKER_IMAGE_NAME = 'grocery_store_image' // Updated Docker image name
-        DOCKER_CONTAINER_NAME = 'alay2003/grocerystore' // Updated Docker container name
+        DOCKER_IMAGE_NAME = 'alay2003/grocery_store_image' // Updated Docker image name
         IMAGE_TAG = 'new' // Specify the tag for the image
+        DOCKER_USERNAME = 'alay2003'
+        DOCKER_PASSWORD = 'alay@2003'
     }
 
     stages {
@@ -46,8 +47,8 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    // Build the Docker image using Docker Pipeline Plugin
-                    docker.build("${DOCKER_IMAGE_NAME}:${IMAGE_TAG}")
+                    // Build the Docker image using Docker
+                    bat "docker build -t ${DOCKER_IMAGE_NAME}:${IMAGE_TAG} ."
                 }
             }
         }
@@ -55,8 +56,8 @@ pipeline {
         stage('Login to Docker') {
             steps {
                 script {
+                    // Securely login to Docker using the credentials
                     withCredentials([usernamePassword(credentialsId: DOCKER_HUB_CREDENTIALS, passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
-                        // Securely login to Docker using the credentials
                         bat "cmd /c echo ${DOCKER_PASSWORD} | docker login -u ${DOCKER_USERNAME} --password-stdin"
                     }
                 }
@@ -66,8 +67,17 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 script {
-                    // Push the Docker image to Docker Hub using Docker Compose
+                    // Push the Docker image to Docker Hub
                     bat "docker push ${DOCKER_IMAGE_NAME}:${IMAGE_TAG}"
+                }
+            }
+        }
+
+        stage('Run Docker Compose') {
+            steps {
+                script {
+                    // Run Docker Compose to start the application
+                    bat "docker-compose up -d"
                 }
             }
         }

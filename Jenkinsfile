@@ -5,6 +5,7 @@ pipeline {
         DOCKER_HUB_CREDENTIALS = 'docker-hub-token' // Replace with your Jenkins credential ID
         DOCKER_IMAGE_NAME = 'alay2003/grocery-store' // Updated Docker image name
         IMAGE_TAG = 'alay' // Specify the tag for the image
+        K8S_NAMESPACE = 'elk' // Kubernetes namespace for ELK
     }
 
     stages {
@@ -51,22 +52,50 @@ pipeline {
             }
         }
 
-       stage('Login to Docker') {
-    steps {
-        script {
-            withCredentials([usernamePassword(credentialsId: 'docker-hub-token', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
-                bat "docker login -u %DOCKER_USERNAME% -p %DOCKER_PASSWORD%"
+        stage('Login to Docker') {
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: 'docker-hub-token', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
+                        bat "docker login -u %DOCKER_USERNAME% -p %DOCKER_PASSWORD%"
+                    }
+                }
             }
         }
-    }
-}
-
 
         stage('Push Docker Image') {
             steps {
                 script {
                     // Push the Docker image to Docker Hub
                     bat "docker push ${DOCKER_IMAGE_NAME}:${IMAGE_TAG}"
+                }
+            }
+        }
+
+        stage('Deploy ELK Stack') {
+            steps {
+                script {
+                    // Apply the ELK ConfigMap and other resources
+                    bat "kubectl apply -f path/to/your/logstash-config.yaml -n ${K8S_NAMESPACE}"
+                    bat "kubectl apply -f path/to/your/elasticsearch-deployment.yaml -n ${K8S_NAMESPACE}"
+                    bat "kubectl apply -f path/to/your/kibana-deployment.yaml -n ${K8S_NAMESPACE}"
+                }
+            }
+        }
+
+        stage('Terraform Init') {
+            steps {
+                script {
+                    // Initialize Terraform
+                    bat 'terraform init'
+                }
+            }
+        }
+
+        stage('Terraform Apply') {
+            steps {
+                script {
+                    // Apply Terraform configuration
+                    bat 'terraform apply -auto-approve'
                 }
             }
         }

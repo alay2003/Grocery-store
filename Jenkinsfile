@@ -72,15 +72,21 @@ pipeline {
         }
 
         stage('Start Minikube') {
-            steps {
-                script {
-                    // Start Minikube
-                    bat 'minikube start'
-                    // Set the Kubernetes context to Minikube
-                    bat 'kubectl config use-context minikube'
-                }
+    steps {
+        script {
+            // Check if Minikube is already running
+            def minikubeStatus = bat(script: 'minikube status --format={{.Host}}', returnStdout: true).trim()
+            if (minikubeStatus == 'Running') {
+                echo 'Minikube is already running.'
+            } else {
+                // Start Minikube
+                bat 'minikube start'
             }
+            // Set the Kubernetes context to Minikube
+            bat 'kubectl config use-context minikube'
         }
+    }
+}
 
         stage('Deploy ELK Stack') {
             steps {

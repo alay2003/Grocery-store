@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_HUB_CREDENTIALS = 'docker-ishaan' // Replace with your Jenkins credential ID
+        DOCKER_HUB_CREDENTIALS = 'docker-hub-token' // Replace with your Jenkins credential ID
         DOCKER_IMAGE_NAME = 'dishankjain/grocery-store' // Updated Docker image name
         IMAGE_TAG = 'alay' // Specify the tag for the image
         K8S_NAMESPACE = 'elk' // Kubernetes namespace for ELK

@@ -76,6 +76,8 @@ pipeline {
                 script {
                     // Start Minikube
                     bat 'minikube start'
+                    // Set the Kubernetes context to Minikube
+                    bat 'kubectl config use-context minikube'
                 }
             }
         }

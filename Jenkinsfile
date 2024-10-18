@@ -15,7 +15,7 @@ pipeline {
                 script {
                     // Checkout the specified branch
                     checkout([$class: 'GitSCM', branches: [[name: "*/${GIT_BRANCH}"]], 
-                    userRemoteConfigs: [[url: 'https://github.com/alay2003/Grocery-store.git']]])
+                    userRemoteConfigs: [[url: 'https://github.com/alay2003/Grocery-store/tree/dishank']]])
                 }
             }
         }

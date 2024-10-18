@@ -93,7 +93,7 @@ pipeline {
             steps {
                 script {
                     // Create the namespace if it doesn't exist
-                    bat "kubectl create namespace ${K8S_NAMESPACE} || echo 'Namespace already exists'"
+                    bat 'minikube kubectl -- create namespace elk || echo "Namespace already exists"'
                 }
             }
         }

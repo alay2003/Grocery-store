@@ -2,22 +2,16 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_HUB_CREDENTIALS = 'docker-ishaan' // Replace with your Jenkins credential ID
-        DOCKER_IMAGE_NAME = 'ishaanbhadrike/grocery-store' // Updated Docker image name
-        IMAGE_TAG = 'alay' // Specify the tag for the image
+        DOCKER_HUB_CREDENTIALS = 'docker-hub-token' // Replace with your Jenkins credential ID
+        DOCKER_IMAGE_NAME = 'alay2003/grocery_store' // Updated Docker image name
+        IMAGE_TAG = 'alayp' // Specify the tag for the image
         K8S_NAMESPACE = 'elk' // Kubernetes namespace for ELK
-        GIT_BRANCH = 'Ishaan' // Specify the new branch name
-        KUBECONFIG = 'C:\\Users\\ibhad\\.kube\\config' // Path to your kubeconfig file
     }
 
     stages {
         stage('Checkout') {
             steps {
-                script {
-                    // Checkout the specified branch
-                    checkout([$class: 'GitSCM', branches: [[name: "*/${GIT_BRANCH}"]], 
-                    userRemoteConfigs: [[url: 'https://github.com/alay2003/Grocery-store.git']]])
-                }
+                checkout scm
             }
         }
 
@@ -61,7 +55,7 @@ pipeline {
         stage('Login to Docker') {
             steps {
                 script {
-                    withCredentials([usernamePassword(credentialsId: "${DOCKER_HUB_CREDENTIALS}", passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
+                    withCredentials([usernamePassword(credentialsId: 'docker-hub-token', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
                         bat "docker login -u %DOCKER_USERNAME% -p %DOCKER_PASSWORD%"
                     }
                 }
@@ -95,22 +89,13 @@ pipeline {
             }
         }
 
-        stage('Create ELK Namespace') {
-            steps {
-                script {
-                    // Create the namespace if it doesn't exist
-                    bat "kubectl create namespace ${K8S_NAMESPACE} || echo 'Namespace already exists'"
-                }
-            }
-        }
-
         stage('Deploy ELK Stack') {
             steps {
                 script {
                     // Apply the ELK ConfigMap and other resources
-                    bat "kubectl apply -f logstash-config.yaml -n ${K8S_NAMESPACE} --validate=false"
-                    bat "kubectl apply -f elasticsearch-deployment.yaml -n ${K8S_NAMESPACE} --validate=false"
-                    bat "kubectl apply -f kibana-deployment.yaml -n ${K8S_NAMESPACE} --validate=false"
+                    bat "kubectl apply -f logstash-config.yaml -n ${K8S_NAMESPACE}"
+                    bat "kubectl apply -f elasticsearch-deployment.yaml -n ${K8S_NAMESPACE}"
+                    bat "kubectl apply -f kibana-deployment.yaml -n ${K8S_NAMESPACE}"
                 }
             }
         }

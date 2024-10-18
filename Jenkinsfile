@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_HUB_CREDENTIALS = 'docker-hub-token' // Replace with your Docker Hub credentials ID
+        DOCKER_HUB_CREDENTIALS = 'docker-hub-token' // Docker Hub credentials ID
         DOCKER_IMAGE_NAME = 'alay2003/grocery_store' // Updated Docker image name
         IMAGE_TAG = 'alayp' // Specify the tag for the image
         K8S_NAMESPACE = 'elk1' // Kubernetes namespace for ELK
@@ -61,7 +61,7 @@ pipeline {
         stage('Login to Docker') {
             steps {
                 script {
-                    withCredentials([usernamePassword(credentialsId: 'docker-hub-token', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
+                    withCredentials([usernamePassword(credentialsId: DOCKER_HUB_CREDENTIALS, passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
                         bat "docker login -u %DOCKER_USERNAME% -p %DOCKER_PASSWORD%"
                     }
                 }
@@ -90,16 +90,14 @@ pipeline {
             steps {
                 script {
                     // Apply Terraform configuration
-                    withCredentials([string(credentialsId: 'azure-sp-auth', variable: 'ARM_SERVICE_PRINCIPAL')]) {
-                        bat '''
-                        az login --service-principal \
-                        --username %ARM_CLIENT_ID% \
-                        --password %ARM_CLIENT_SECRET% \
-                        --tenant %ARM_TENANT_ID%
-                        
-                        terraform apply -auto-approve
-                        '''
-                    }
+                    bat '''
+                    az login --service-principal \
+                    --username %ARM_CLIENT_ID% \
+                    --password %ARM_CLIENT_SECRET% \
+                    --tenant %ARM_TENANT_ID%
+                    
+                    terraform apply -auto-approve
+                    '''
                 }
             }
         }
@@ -107,7 +105,7 @@ pipeline {
         stage('Create ELK Namespace') {
             steps {
                 script {
-                    // Create the namespace if it doesn't exist and ensure the pipeline doesn't fail
+                    // Create the namespace if it doesn't exist
                     bat """
                     kubectl get namespace ${K8S_NAMESPACE} || kubectl create namespace ${K8S_NAMESPACE}
                     """

@@ -96,13 +96,22 @@ pipeline {
         }
 
         stage('Create ELK Namespace') {
-            steps {
-                script {
-                    // Create the namespace if it doesn't exist
-                    bat "kubectl create namespace ${K8S_NAMESPACE} || echo 'Namespace already exists'"
-                }
+    steps {
+        script {
+            // Check if the namespace already exists
+            def namespaceExists = sh(script: "kubectl get namespaces | grep 'elk'", returnStatus: true) == 0
+            
+            if (!namespaceExists) {
+                // Create the namespace if it doesn't exist
+                sh "kubectl create namespace elk"
+                echo "Namespace 'elk' created."
+            } else {
+                echo "Namespace 'elk' already exists."
             }
         }
+    }
+}
+
 
         stage('Deploy ELK Stack') {
             steps {

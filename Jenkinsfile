@@ -71,34 +71,6 @@ pipeline {
             }
         }
 
-        stage('Start Minikube') {
-    steps {
-        script {
-            // Check if Minikube is already running
-            def minikubeStatus = bat(script: 'minikube status --format={{.Host}}', returnStdout: true).trim()
-            if (minikubeStatus == 'Running') {
-                echo 'Minikube is already running.'
-            } else {
-                // Start Minikube
-                bat 'minikube start'
-            }
-            // Set the Kubernetes context to Minikube
-            bat 'kubectl config use-context minikube'
-        }
-    }
-}
-
-        stage('Deploy ELK Stack') {
-            steps {
-                script {
-                    // Apply the ELK ConfigMap and other resources
-                    bat "kubectl apply -f logstash-config.yaml -n ${K8S_NAMESPACE}"
-                    bat "kubectl apply -f elasticsearch-deployment.yaml -n ${K8S_NAMESPACE}"
-                    bat "kubectl apply -f kibana-deployment.yaml -n ${K8S_NAMESPACE}"
-                }
-            }
-        }
-
         stage('Terraform Init') {
             steps {
                 script {
@@ -113,6 +85,17 @@ pipeline {
                 script {
                     // Apply Terraform configuration
                     bat 'terraform apply -auto-approve'
+                }
+            }
+        }
+
+        stage('Deploy ELK Stack') {
+            steps {
+                script {
+                    // Apply the ELK ConfigMap and other resources
+                    bat "kubectl apply -f logstash-config.yaml -n ${K8S_NAMESPACE}"
+                    bat "kubectl apply -f elasticsearch-deployment.yaml -n ${K8S_NAMESPACE}"
+                    bat "kubectl apply -f kibana-deployment.yaml -n ${K8S_NAMESPACE}"
                 }
             }
         }

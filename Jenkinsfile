@@ -2,10 +2,16 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_HUB_CREDENTIALS = 'docker-hub-token' // Replace with your Jenkins credential ID
+        DOCKER_HUB_CREDENTIALS = 'docker-hub-token' // Replace with your Docker Hub credentials ID
         DOCKER_IMAGE_NAME = 'alay2003/grocery_store' // Updated Docker image name
         IMAGE_TAG = 'alayp' // Specify the tag for the image
         K8S_NAMESPACE = 'elk1' // Kubernetes namespace for ELK
+
+        // Azure Service Principal credentials
+        ARM_CLIENT_ID = credentials('azure-sp-client-id') // Jenkins credential ID for Azure clientId
+        ARM_CLIENT_SECRET = credentials('azure-sp-client-secret') // Jenkins credential ID for Azure clientSecret
+        ARM_SUBSCRIPTION_ID = credentials('azure-sp-subscription-id') // Jenkins credential ID for Azure subscriptionId
+        ARM_TENANT_ID = credentials('azure-sp-tenant-id') // Jenkins credential ID for Azure tenantId
     }
 
     stages {
@@ -80,11 +86,20 @@ pipeline {
             }
         }
 
-         stage('Terraform Apply') {
+        stage('Terraform Apply') {
             steps {
                 script {
                     // Apply Terraform configuration
-                    bat 'terraform apply -auto-approve'
+                    withCredentials([string(credentialsId: 'azure-sp-auth', variable: 'ARM_SERVICE_PRINCIPAL')]) {
+                        bat '''
+                        az login --service-principal \
+                        --username %ARM_CLIENT_ID% \
+                        --password %ARM_CLIENT_SECRET% \
+                        --tenant %ARM_TENANT_ID%
+                        
+                        terraform apply -auto-approve
+                        '''
+                    }
                 }
             }
         }

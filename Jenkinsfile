@@ -8,6 +8,7 @@ pipeline {
         K8S_NAMESPACE = 'elk' // Kubernetes namespace for ELK
         GIT_BRANCH = 'Ishaan' // Specify the new branch name
         KUBECONFIG = 'C:\\Users\\ibhad\\.kube\\config' // Path to your kubeconfig file
+        DEPENDENCY_CHECK_PATH = 'C:\\Users\\ibhad\\Downloads\\dependency-check-10.0.4-release\\dependency-check\\bin\\dependency-check.bat' // Update this path
     }
 
     stages {
@@ -45,6 +46,15 @@ pipeline {
                 script {
                     // Run the tests
                     bat 'node cart_test.js'
+                }
+            }
+        }
+
+        stage('Dependency Check') {
+            steps {
+                script {
+                    // Run OWASP Dependency-Check
+                    bat "${DEPENDENCY_CHECK_PATH} --project \"Grocery Store\" --scan . --out . --format ALL"
                 }
             }
         }

@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const cors = require('cors'); // Import CORS
 const app = express();
 const port = 3000;
 
@@ -8,6 +9,7 @@ let cart = [];
 
 // Middleware to parse incoming request bodies (application/json)
 app.use(bodyParser.json());
+app.use(cors()); // Use CORS middleware
 
 // Serve static files like index.html, cart.html, and CSS/JS
 app.use(express.static('public'));
@@ -42,7 +44,6 @@ app.post('/checkout', (req, res) => {
 });
 
 // Start the server
-app.listen(3000, '0.0.0.0', () => {
-    console.log('Server running on http://0.0.0.0:3000');
+app.listen(port, '0.0.0.0', () => {
+    console.log(`Server running on http://0.0.0.0:${port}`);
 });
-

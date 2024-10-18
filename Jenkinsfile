@@ -8,12 +8,14 @@ pipeline {
         K8S_NAMESPACE = 'elk' // Kubernetes namespace for ELK
     }
 
-    stages {
-        stage('Checkout') {
-            steps {
-                checkout scm
-            }
+    stage('Checkout') {
+    steps {
+        script {
+            checkout([$class: 'GitSCM', branches: [[name: '*/dishank']], 
+            userRemoteConfigs: [[url: 'https://github.com/alay2003/Grocery-store.git']]])
         }
+    }
+}
 
         stage('Build') {
             steps {

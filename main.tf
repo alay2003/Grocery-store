@@ -1,5 +1,5 @@
 provider "kubernetes" {
-  config_path = ""C:\Users\alayp\.kube\config""  # Point to your kubeconfig file
+  config_path = ""C://Users//alayp//.kube//config""  # Point to your kubeconfig file
 }
 
 resource "kubernetes_deployment" "grocery_store" {

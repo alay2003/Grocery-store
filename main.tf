@@ -1,5 +1,5 @@
 provider "kubernetes" {
-  config_path = "~/.kube/config"  # Point to your kubeconfig file
+  config_path = ""C:\Users\alayp\.kube\config""  # Point to your kubeconfig file
 }
 
 resource "kubernetes_deployment" "grocery_store" {
@@ -25,8 +25,8 @@ resource "kubernetes_deployment" "grocery_store" {
 
       spec {
         container {
-          image = "alay2003/grocery-store:alay"
-          name  = "grocery-store"
+          image = "alay2003/grocery_store:alayp"
+          name  = "grocery_store"
           port {
             container_port = 3000
           }

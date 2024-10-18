@@ -80,7 +80,7 @@ pipeline {
             }
         }
 
-        stage('Terraform Apply') {
+         stage('Terraform Apply') {
             steps {
                 script {
                     // Apply Terraform configuration
@@ -89,13 +89,22 @@ pipeline {
             }
         }
 
+        stage('Create ELK Namespace') {
+            steps {
+                script {
+                    // Create the namespace if it doesn't exist
+                    bat "kubectl create namespace ${K8S_NAMESPACE} || echo 'Namespace already exists'"
+                }
+            }
+        }
+
         stage('Deploy ELK Stack') {
             steps {
                 script {
                     // Apply the ELK ConfigMap and other resources
-                    bat "kubectl apply -f logstash-config.yaml -n ${K8S_NAMESPACE}"
-                    bat "kubectl apply -f elasticsearch-deployment.yaml -n ${K8S_NAMESPACE}"
-                    bat "kubectl apply -f kibana-deployment.yaml -n ${K8S_NAMESPACE}"
+                    bat "kubectl apply -f logstash-config.yaml -n ${K8S_NAMESPACE} --validate=false"
+                    bat "kubectl apply -f elasticsearch-deployment.yaml -n ${K8S_NAMESPACE} --validate=false"
+                    bat "kubectl apply -f kibana-deployment.yaml -n ${K8S_NAMESPACE} --validate=false"
                 }
             }
         }

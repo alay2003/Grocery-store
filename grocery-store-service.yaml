@@ -3,10 +3,9 @@ kind: Service
 metadata:
   name: grocery-store
 spec:
-  type: NodePort  # Change to LoadBalancer if needed
+  type: LoadBalancer  # Changed to LoadBalancer
   ports:
-    - port: 3000      # The port that the service will expose
+    - port: 3000        # The port that the service will expose
       targetPort: 3000  # The port the container is listening on
-      nodePort: 30001  # Node port (optional, can be auto-assigned)
   selector:
     app: grocery-store

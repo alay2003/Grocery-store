@@ -83,7 +83,7 @@ pipeline {
             steps {
                 script {
                     // Run OWASP Dependency-Check
-                    bat "${DEPENDENCY_CHECK_PATH} --project \"Grocery Store\" --scan . --out . --format ALL --nvd-api-key ${NVD_API_KEY} --data C:\\path\\to\\cache"
+                    bat "${DEPENDENCY_CHECK_PATH} --project \"Grocery Store\" --scan . --out . --format ALL --nvdApiKey ${NVD_API_KEY} --data C:\\path\\to\\cache"
                 }
             }
         }

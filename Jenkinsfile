@@ -7,6 +7,7 @@ pipeline {
         IMAGE_TAG = 'alay' // Specify the tag for the image
         K8S_NAMESPACE = 'elk' // Kubernetes namespace for ELK
         GIT_BRANCH = 'Ishaan' // Specify the new branch name
+        KUBECONFIG = 'C:\\Users\\ibhad\\.kube\\config' // Path to your kubeconfig file
     }
 
     stages {
@@ -60,15 +61,12 @@ pipeline {
         stage('Login to Docker') {
             steps {
                 script {
-                    withCredentials([usernamePassword(credentialsId: "${DOCKER_HUB_CREDENTIALS}", passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) 
-                    {
+                    withCredentials([usernamePassword(credentialsId: "${DOCKER_HUB_CREDENTIALS}", passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
                         bat "docker login -u %DOCKER_USERNAME% -p %DOCKER_PASSWORD%"
                     }
                 }
             }
         }
-
-        
 
         stage('Push Docker Image') {
             steps {
@@ -101,9 +99,9 @@ pipeline {
             steps {
                 script {
                     // Apply the ELK ConfigMap and other resources
-                    bat "kubectl apply -f logstash-config.yaml -n ${K8S_NAMESPACE}"
-                    bat "kubectl apply -f elasticsearch-deployment.yaml -n ${K8S_NAMESPACE}"
-                    bat "kubectl apply -f kibana-deployment.yaml -n ${K8S_NAMESPACE}"
+                    bat "kubectl apply -f logstash-config.yaml -n ${K8S_NAMESPACE} --validate=false"
+                    bat "kubectl apply -f elasticsearch-deployment.yaml -n ${K8S_NAMESPACE} --validate=false"
+                    bat "kubectl apply -f kibana-deployment.yaml -n ${K8S_NAMESPACE} --validate=false"
                 }
             }
         }

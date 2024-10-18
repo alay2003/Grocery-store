@@ -25,7 +25,7 @@ resource "kubernetes_deployment" "grocery_store" {
 
       spec {
         container {
-          image = "alay2003/grocery-store:alayp"
+          image = "alay2003/grocery-store:alay"
           name  = "grocery-store"
           port {
             container_port = 3000

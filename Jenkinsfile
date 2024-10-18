@@ -3,15 +3,20 @@ pipeline {
 
     environment {
         DOCKER_HUB_CREDENTIALS = 'docker-hub-token' // Replace with your Jenkins credential ID
-        DOCKER_IMAGE_NAME = 'alay2003/grocery-store' // Updated Docker image name
+        DOCKER_IMAGE_NAME = 'ishaanbhadrike/grocery-store' // Updated Docker image name
         IMAGE_TAG = 'alay' // Specify the tag for the image
         K8S_NAMESPACE = 'elk' // Kubernetes namespace for ELK
+        GIT_BRANCH = 'Ishaan' // Specify the new branch name
     }
 
     stages {
         stage('Checkout') {
             steps {
-                checkout scm
+                script {
+                    // Checkout the specified branch
+                    checkout([$class: 'GitSCM', branches: [[name: "*/${GIT_BRANCH}"]], 
+                    userRemoteConfigs: [[url: 'https://github.com/alay2003/Grocery-store.git']]])
+                }
             }
         }
 

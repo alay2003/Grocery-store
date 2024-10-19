@@ -88,7 +88,7 @@ pipeline {
             steps {
                 script {
                     // Output the Tenant ID being used for debugging
-                    bat "echo Using Tenant ID: ${ARM_TENANT_ID}"
+                    bat "echo Using Tenant ID: %ARM_TENANT_ID%"
                 }
             }
         }
@@ -106,12 +106,12 @@ pipeline {
             steps {
                 script {
                     // Apply Terraform configuration with Azure login
-                   bat """
-                       az login --service-principal ^
-                       --username ${ARM_CLIENT_ID} ^
-                       --password ${ARM_CLIENT_SECRET} ^
-                       --tenant ${ARM_TENANT_ID}
-                       terraform apply -auto-approve
+                    bat """
+                        az login --service-principal ^
+                        --username %ARM_CLIENT_ID% ^
+                        --password %ARM_CLIENT_SECRET% ^
+                        --tenant %ARM_TENANT_ID%
+                        terraform apply -auto-approve
                     """
                 }
             }

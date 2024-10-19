@@ -77,6 +77,16 @@ pipeline {
             }
         }
 
+        // Debugging Stage for Tenant ID
+        stage('Debug Tenant ID') {
+            steps {
+                script {
+                    // Output the Tenant ID being used for debugging
+                    bat "echo Using Tenant ID: %ARM_TENANT_ID%"
+                }
+            }
+        }
+
         stage('Terraform Init') {
             steps {
                 script {
@@ -89,11 +99,11 @@ pipeline {
         stage('Terraform Apply') {
             steps {
                 script {
-                    // Apply Terraform configuration
+                    // Apply Terraform configuration with Azure login
                     bat '''
-                    az login --service-principal \
-                    --username %ARM_CLIENT_ID% \
-                    --password %ARM_CLIENT_SECRET% \
+                    az login --service-principal ^
+                    --username %ARM_CLIENT_ID% ^
+                    --password %ARM_CLIENT_SECRET% ^
                     --tenant %ARM_TENANT_ID%
                     
                     terraform apply -auto-approve
@@ -139,7 +149,6 @@ pipeline {
             script {
                 // Clean up actions, if needed
                 echo 'Cleaning up...'
-                // You could stop the server or perform other cleanup actions here
             }
         }
     }

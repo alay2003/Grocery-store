@@ -2,16 +2,21 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_HUB_CREDENTIALS = 'docker-hub-token' // Docker Hub credentials ID
-        DOCKER_IMAGE_NAME = 'alay2003/grocery_store' // Docker image name
-        IMAGE_TAG = 'alayp' // Docker image tag
-        K8S_NAMESPACE = 'elk1' // Kubernetes namespace for ELK
+        // Docker Hub credentials ID
+        DOCKER_HUB_CREDENTIALS = 'docker-hub-token' 
 
-        // Azure Service Principal credentials
-        ARM_CLIENT_ID = credentials('azure-sp-client-id') // Jenkins credential ID for Azure clientId
-        ARM_CLIENT_SECRET = credentials('azure-sp-client-secret') // Jenkins credential ID for Azure clientSecret
-        ARM_SUBSCRIPTION_ID = credentials('azure-sp-subscription-id') // Jenkins credential ID for Azure subscriptionId
-        ARM_TENANT_ID = credentials('azure-sp-tenant-id') // Jenkins credential ID for Azure tenantId
+        // Updated Docker image name and tag
+        DOCKER_IMAGE_NAME = 'alay2003/grocery_store'
+        IMAGE_TAG = 'alayp'
+
+        // Kubernetes namespace for ELK
+        K8S_NAMESPACE = 'elk1' 
+
+        // Azure Service Principal credentials (direct assignment)
+        ARM_CLIENT_ID = 'azure-sp-client-id' // Azure clientId 
+        ARM_CLIENT_SECRET = 'azure-sp-client-secret' // Azure clientSecret 
+        ARM_SUBSCRIPTION_ID = 'azure-sp-subscription-id' // Azure subscriptionId 
+        ARM_TENANT_ID = 'azure-sp-tenant-id' // Azure tenantId
     }
 
     stages {
@@ -61,6 +66,7 @@ pipeline {
         stage('Login to Docker') {
             steps {
                 script {
+                    // Login to Docker Hub using credentials
                     withCredentials([usernamePassword(credentialsId: DOCKER_HUB_CREDENTIALS, passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
                         bat "docker login -u %DOCKER_USERNAME% -p %DOCKER_PASSWORD%"
                     }
@@ -77,11 +83,12 @@ pipeline {
             }
         }
 
+        // Debugging Stage for Tenant ID
         stage('Debug Tenant ID') {
             steps {
                 script {
                     // Output the Tenant ID being used for debugging
-                    bat "echo Using Tenant ID: %ARM_TENANT_ID%"
+                    bat "echo Using Tenant ID: ${ARM_TENANT_ID}"
                 }
             }
         }
@@ -99,13 +106,13 @@ pipeline {
             steps {
                 script {
                     // Apply Terraform configuration with Azure login
-                    bat '''
-                        az login --service-principal ^
-                        --username %ARM_CLIENT_ID% ^
-                        --password %ARM_CLIENT_SECRET% ^
-                        --tenant %ARM_TENANT_ID%
-                        terraform apply -auto-approve
-                    '''
+                   bat """
+                       az login --service-principal ^
+                       --username ${ARM_CLIENT_ID} ^
+                       --password ${ARM_CLIENT_SECRET} ^
+                       --tenant ${ARM_TENANT_ID}
+                       terraform apply -auto-approve
+                    """
                 }
             }
         }
@@ -114,7 +121,9 @@ pipeline {
             steps {
                 script {
                     // Create the namespace if it doesn't exist
-                    bat "kubectl get namespace ${K8S_NAMESPACE} || kubectl create namespace ${K8S_NAMESPACE}"
+                    bat """
+                    kubectl get namespace ${K8S_NAMESPACE} || kubectl create namespace ${K8S_NAMESPACE}
+                    """
                 }
             }
         }

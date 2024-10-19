@@ -3,8 +3,8 @@ pipeline {
 
     environment {
         DOCKER_HUB_CREDENTIALS = 'docker-hub-token' // Docker Hub credentials ID
-        DOCKER_IMAGE_NAME = 'alay2003/grocery_store' // Updated Docker image name
-        IMAGE_TAG = 'alayp' // Specify the tag for the image
+        DOCKER_IMAGE_NAME = 'alay2003/grocery_store' // Docker image name
+        IMAGE_TAG = 'alayp' // Docker image tag
         K8S_NAMESPACE = 'elk1' // Kubernetes namespace for ELK
 
         // Azure Service Principal credentials
@@ -77,7 +77,6 @@ pipeline {
             }
         }
 
-        // Debugging Stage for Tenant ID
         stage('Debug Tenant ID') {
             steps {
                 script {
@@ -101,12 +100,11 @@ pipeline {
                 script {
                     // Apply Terraform configuration with Azure login
                     bat '''
-                    az login --service-principal ^
-                    --username %ARM_CLIENT_ID% ^
-                    --password %ARM_CLIENT_SECRET% ^
-                    --tenant %ARM_TENANT_ID%
-                    
-                    terraform apply -auto-approve
+                        az login --service-principal ^
+                        --username %ARM_CLIENT_ID% ^
+                        --password %ARM_CLIENT_SECRET% ^
+                        --tenant %ARM_TENANT_ID%
+                        terraform apply -auto-approve
                     '''
                 }
             }
@@ -116,9 +114,7 @@ pipeline {
             steps {
                 script {
                     // Create the namespace if it doesn't exist
-                    bat """
-                    kubectl get namespace ${K8S_NAMESPACE} || kubectl create namespace ${K8S_NAMESPACE}
-                    """
+                    bat "kubectl get namespace ${K8S_NAMESPACE} || kubectl create namespace ${K8S_NAMESPACE}"
                 }
             }
         }
